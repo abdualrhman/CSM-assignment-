@@ -82,6 +82,17 @@ Run the F# script `hello.fsx` with the F# interpreter by entering the following 
 fsharpi Hello.fsx
 ```
 
+The program will try to read and parse the answer to a simple question from the console. It will give you three chances to reply with the expected format (`I'm <name>`):
+
+```
+Who are you?
+Alice
+Who are you?
+I am Alice
+Who are you?
+I'm Alice
+Hello Alice!
+```
 
 # 4. Further information
 
