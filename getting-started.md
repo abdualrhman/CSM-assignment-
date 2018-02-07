@@ -31,27 +31,26 @@ To add F# extension to Visual Studio Code:
 
 # 2. Installing FsLexYacc
 
-Again, there are several options for installing the parser generator FsLexYacc (see https://www.nuget.org/packages/FsLexYacc/). A simple option is to use Homebrew by typing the following commands in the terminal:
+There are several options for installing the lexer andparser generator [FsLexYacc](http://fsprojects.github.io/FsLexYacc/). See https://www.nuget.org/packages/FsLexYacc/ for a list of such options. You can also use the terminal by first installing the package manager `nuget` via Homebrew:
 
 ```    
 brew install nuget
 ```
 
-This will install the package manager `nuget`
-
-And then you can install the `fxlex` and `fxyacc` and libraries to current folder by entering the following command in the terminal:
+and then installing the FsLexYacc in your current folder by entering the following command in the terminal:
 
 ```
 nuget install FsLexYacc
 ```
+
 
 ## 3. Using the parser generator
 
 The following instructions assume that:
 - fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files
 - mono is needed to execute ".exe" executables (if under Windows, then remove "mono")
-- the lexer file is Hello.fsl
-- the parser file is Hello.fsp
+- the lexer file is Hello.fsl and it is in the current folder
+- the parser file is Hello.fsp and it is in the current folder
 
 ### Generating the Lexer:
 Execute this command in the shell:
@@ -69,11 +68,19 @@ Execute this command in the shell:
 mono FsLexYacc.7.0.6/build/fsyacc.exe HelloParser.fsp --module HelloParser
 ```
 
-This will generate the file `GCParser.fs`
+This will generate the file `HelloParser.fs`
 
-(2) Importing and invoking the parser
+### Importing and invoking the parser
 
+See file [hello.fsx](hello.fsx) for an example.
+
+### Running your program
+
+Run the F# script `hello.fsx` with the F# interpreter by entering the following command in the terminal
+
+```
 fsharpi hello.fsx
+```
 
 
 # 4. Further information
