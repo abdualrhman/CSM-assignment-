@@ -1,3 +1,6 @@
+%{
+%}
+
 %token <string> NAME
 %token EOF
 %token ME
