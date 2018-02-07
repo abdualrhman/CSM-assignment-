@@ -26,7 +26,7 @@ brew cask install visual-studio-code
 ```
 
 To add F# extension to Visual Studio Code:
-* Press Cmd+P and install the Ionide F# package: ext install Ionide-fsharp
+* Press `Cmd+P` and install the Ionide F# package by typing `ext install Ionide-fsharp`
 * Follow the rest of the instructions.
 
 # 2. Installing FsLexYacc
@@ -49,8 +49,8 @@ nuget install FsLexYacc
 The following instructions assume that:
 - fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files
 - mono is needed to execute ".exe" executables (if under Windows, then remove "mono")
-- the lexer file is Hello.fsl and it is in the current folder
-- the parser file is Hello.fsp and it is in the current folder
+- the lexer file is [Hello.fsl](hello/Hello.fsl) and it is in the current folder
+- the parser file is [Hello.fsp](hello/Hello.fsp) and it is in the current folder
 
 ### Generating the Lexer:
 Execute this command in the shell:
@@ -72,14 +72,14 @@ This will generate the file `HelloParser.fs`
 
 ### Importing and invoking the parser
 
-See file [hello.fsx](hello.fsx) for an example.
+See file [hello.fsx](hello/Hello.fsx) for an example.
 
 ### Running your program
 
 Run the F# script `hello.fsx` with the F# interpreter by entering the following command in the terminal
 
 ```
-fsharpi hello.fsx
+fsharpi Hello.fsx
 ```
 
 
