@@ -1,24 +1,25 @@
-Guidelines for doing the project with F# in a Mac
-=================================================
+# Getting started
 
-* 1. Installing F# and mono
-* 2. Installing FSLexYacc
-* 3. Using FSLexYacc
-* 4. Further information
+1. [Installing F#](#1-installing-f)
+2. [Installing FSLexYacc](#2-installing-fslexyacc)
+3. [Using FSLexYacc](#3-using-the-parser-generator)
+4. [Further information](#4-further-information)
 
-# 1. Installing F# on a Mac
+# 1. Installing F# 
+
+## Installing F# and mono on Mac OS/X
 
 Go to http://fsharp.org/use/mac/ and select the installation method that better suits you.
 
-A simple method is to install mono via `brew` with by entering the following command in the terminal:
+A simple method is to install mono via [Homebrew](https://brew.sh/) by entering the following command in the terminal:
 
 ```
 brew install mono
 ```
 
-Now the commands `mono` (to run .NET exe files), `fsharpi` (F# interpreter)` and `fsharpc` (F# compiler) will be available in your path.
+Now the commands `mono` (to run .NET exe files), `fsharpi` (F# interpreter) and `fsharpc` (F# compiler) will be available in your path so that you can run them using a terminal. 
 
-There are several editors for F# but you may want to go for Visual studio, which you can actually install via Homebrew:
+There are several editors for F# but you may want to go for [Visual Studio Code](https://code.visualstudio.com/), which you can also install via Homebrew with:
 
 ```
 brew cask install visual-studio-code 
