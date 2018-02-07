@@ -1,0 +1,13 @@
+%token <string> NAME
+%token EOF
+%token ME
+
+// start
+%start start
+%type <string> start
+
+%%
+
+start: ME NAME EOF                       { $2 }
+
+%%
