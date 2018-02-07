@@ -1,0 +1,22 @@
+{
+module HelloLexer
+
+open System
+open HelloParser
+open Microsoft.FSharp.Text.Lexing
+open System.Text
+
+}
+
+let char        = ['a'-'z' 'A'-'Z']
+let digit       = ['0'-'9']
+let whitespace  = [' ' '\t']
+let newline     = "\n\r" | '\n' | '\r'
+let name        = char(char|digit)*
+
+rule tokenize = parse
+| whitespace    { tokenize lexbuf }
+| newline       { lexbuf.EndPos <- lexbuf.EndPos.NextLine; tokenize lexbuf; }
+| "I'm"         { ME }
+| name          { let str = LexBuffer<_>.LexemeString lexbuf in NAME(str) }
+| eof           { EOF }
