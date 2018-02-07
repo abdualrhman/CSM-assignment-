@@ -1,4 +1,4 @@
-# Getting started with F#
+# Getting started with F# #
 
 1. [Installing F#](#1-installing-f)
 2. [Installing FSLexYacc](#2-installing-fslexyacc)
