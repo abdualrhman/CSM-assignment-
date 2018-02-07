@@ -49,8 +49,8 @@ nuget install FsLexYacc
 The following instructions assume that:
 - fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files
 - mono is needed to execute ".exe" executables (if under Windows, then remove "mono")
-- the lexer file is [Hello.fsl](/hello/Hello.fsl) and it is in the current folder
-- the parser file is [Hello.fsp](/hello/Hello.fsp) and it is in the current folder
+- the lexer file is [Hello.fsl](hello/HelloLexer.fsl) and it is in the current folder
+- the parser file is [Hello.fsp](hello/HelloParser.fsp) and it is in the current folder
 
 ### Generating the Lexer:
 Execute this command in the shell:
