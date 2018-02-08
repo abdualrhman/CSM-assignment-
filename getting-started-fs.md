@@ -53,7 +53,7 @@ The following instructions assume that:
 - the parser file is [Hello.fsp](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
 
 ### Generating the Lexer:
-Execute this command in the shell:
+Execute this command in the terminal:
 
 ```
 mono FsLexYacc.7.0.6/build/fslex.exe HelloLexer.fsl --unicode
@@ -62,7 +62,7 @@ mono FsLexYacc.7.0.6/build/fslex.exe HelloLexer.fsl --unicode
 This will generate the file `HelloLexer.fs`
 
 ### Generating the parser
-Execute this command in the shell:
+Execute this command in the terminal:
 
 ```
 mono FsLexYacc.7.0.6/build/fsyacc.exe HelloParser.fsp --module HelloParser
