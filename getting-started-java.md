@@ -20,7 +20,7 @@ There are plenty of editors and IDEs for Java. In the following guidelines we us
 The guidelines to [getting started with ANTLR](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md) contain a pretty simple example. We provide you here another simple one.
 
 The following instructions assume that:
-- Your grammar file is [Hello.g](hello/grammar.g) and it is in the current folder where you are running the terminal.
+- Your grammar file is [Hello.g](hello/Hello.g) and it is in the current folder where you are running the terminal.
 - Command `antlr4` can be found by the terminal
 
 
@@ -36,7 +36,7 @@ This will generate a couple of Java files (`HelloParser.java`, `HelloLexer.java`
 
 ### Importing and invoking the parser
 
-See file [`Hello.java`](Hello.java) for an example.
+See file [`Hello.java`](hello/Hello.java) for an example.
 
 ### Compiling your program
 
