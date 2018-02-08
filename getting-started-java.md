@@ -1,8 +1,8 @@
-# Getting started with Java and ANTLR4 #
+# Getting started with Java and ANTLR4
 
 1. [Installing Java](#1-installing-java)
 2. [Installing ATLR4](#2-installing-antlr4)
-3. [Using ANTLR4](#3-using-atlr4)
+3. [Using ANTLR4](#3-using-antlr4)
 4. [Further information](#4-further-information)
 
 # 1. Installing Java
@@ -15,7 +15,7 @@ There are plenty of editors and IDEs for Java. In the following guidelines we us
 
 [ANTLR](http://www.antlr.org/) has a pretty nice guide to [getting started](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md). Follow it and try the simple examples.
 
-## 3. Using the parser generator
+## 3. Using ANTLR4
 
 The guidelines to [getting started with ANTLR](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md) contain a pretty simple example. We provide you here another simple one.
 
@@ -51,7 +51,7 @@ This will generate some class files.
 ### Running your program
 
 ```
-java Calculator
+java Hello
 ```
 
 The program will try to read and parse the answer to a simple question from the console. It will keep giving you chances to reply with the expected format (`I'm <name>`):
@@ -68,5 +68,5 @@ Hello Alice!
 
 # 4. Further information
 
-On lexing and parsing in Java and ANTLR4
+On parsing in Java and ANTLR4:
 * http://www.antlr.org/
