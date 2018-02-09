@@ -97,8 +97,7 @@ Hello Alice!
 
 ## 4. Further information
 
-On lexing and parsing in F#
-* https://en.wikibooks.org/wiki/F_Sharp_Programming/Lexing_and_Parsing
-* https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858
-* https://gist.github.com/klaeufer/2285720
-* http://realfiction.net/2014/10/20/Lexing-and-parsing-in-F/
+* Lexing and Parsing in F#: https://en.wikibooks.org/wiki/F_Sharp_Programming/Lexing_and_Parsing
+* Lexing and Parsing in F#: http://realfiction.net/2014/10/20/Lexing-and-parsing-in-F/
+* Installing FsLexYacc on a Mac: https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858
+* Creating a Makefile: https://gist.github.com/klaeufer/2285720
