@@ -47,7 +47,8 @@ nuget install FsLexYacc
 ## 3. Using the parser generator
 
 The following instructions assume that:
-- fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files
+- fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files. You can also simplify this by making `fslex` and `fsyacc` availbale in your path (see e.g. [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#4-create-links-to-fslex-and-fsyacc-binaries)).
+- The FsLexYaccc libarary is available under `FsLexYacc.Runtime.7.0.6` in folder you are working. Also this can be simplified as explained in [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#5-link-the-runtime-dll-to-your-fsharp-folder)
 - mono is needed to execute ".exe" executables (if under Windows, then remove "mono")
 - the lexer file is [Hello.fsl](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloLexer.fsl) and it is in the current folder
 - the parser file is [Hello.fsp](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
