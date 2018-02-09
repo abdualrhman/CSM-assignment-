@@ -1,0 +1,30 @@
+{
+module CalculatorLexer
+open Microsoft.FSharp.Text.Lexing
+// open the module that defines the tokens
+open CalculatorParser
+}
+
+// common regex macros
+let char        = ['a'-'z' 'A'-'Z']
+let digit       = ['0'-'9']
+let int         = '-'?digit+
+let float       = '-'?digit+ '.' digit+
+let num         = ('+'|'-')? digit+ ( '.' digit+)?  ('E' ('+'|'-')? digit+ )?
+let whitespace  = [' ' '\t']
+let newline     = "\n\r" | '\n' | '\r'
+
+// rules for recogninzing and building tokens
+rule tokenize = parse
+| whitespace    { tokenize lexbuf }
+| newline       { lexbuf.EndPos <- lexbuf.EndPos.NextLine; tokenize lexbuf; }
+// for each of the tokens of our language we need a rule
+| num           { NUM(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
+| '*'           { TIMES }
+| '/'           { DIV }
+| '+'           { PLUS }
+| '-'           { MINUS }
+| '^'           { POW }
+| '('           { LPAR }
+| ')'           { RPAR }
+| eof           { EOF }
