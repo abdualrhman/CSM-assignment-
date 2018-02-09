@@ -5,13 +5,13 @@
 3. [Using ANTLR4](#3-using-antlr4)
 4. [Further information](#4-further-information)
 
-# 1. Installing Java
+## 1. Installing Java
 
 Your computer may already have Java installed. If not, see https://www.java.com/en/download/help/download_options.xml for instructions on how to install Java in your computer.
 
 There are plenty of editors and IDEs for Java. In the following guidelines we use the terminal to compile Java programs and to run them.
 
-# 2. Installing ANTLR4
+## 2. Installing ANTLR4
 
 [ANTLR](http://www.antlr.org/) has a pretty nice guide to [getting started](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md). Follow it and try the simple examples.
 
@@ -66,7 +66,7 @@ I'm Alice
 Hello Alice!
 ```
 
-# 4. Further information
+## 4. Further information
 
 On parsing in Java and ANTLR4:
 * http://www.antlr.org/
