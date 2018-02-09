@@ -7,11 +7,13 @@ This folder contains examples of "calculator" programs in F# and Java tha read a
 
 ## Instructions for F# #/FSLexYacc
 
-TBD.
+This is instructions assume that you have followed the guidelines to [getting started with F# and FSLexYacc](getting-started-fs.md) and that you are using a terminal on a folder contaning...
+
+...
 
 ## Instructions for Java/ANTLR
 
-This is instructions assume that you have followed the guidelines to get started with Java and ANTLR4 and that you are using a terminal on a folder contaning [Calculator.g](Calculator.g) and [Calculator.java](Calculator.java).
+This is instructions assume that you have followed the guidelines to [getting started with Java and ANLTR4](getting-started-java.md) and that you are using a terminal on a folder contaning [Calculator.g](Calculator.g) and [Calculator.java](Calculator.java).
 
 Generate the visitor-based parser with
 
