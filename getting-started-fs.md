@@ -5,9 +5,9 @@
 3. [Using FSLexYacc](#3-using-the-parser-generator)
 4. [Further information](#4-further-information)
 
-# 1. Installing F# 
+## 1. Installing F# 
 
-## Installing F# and mono on Mac OS/X
+### Installing F# and mono on Mac OS/X
 
 Go to http://fsharp.org/use/mac/ and select the installation method that better suits you.
 
@@ -29,7 +29,7 @@ To add F# extension to Visual Studio Code:
 * Press `Cmd+P` and install the Ionide F# package by typing `ext install Ionide-fsharp`
 * Follow the rest of the instructions.
 
-# 2. Installing FsLexYacc
+## 2. Installing FsLexYacc
 
 There are several options for installing the lexer andparser generator [FsLexYacc](http://fsprojects.github.io/FsLexYacc/). See https://www.nuget.org/packages/FsLexYacc/ for a list of such options. You can also use the terminal by first installing the package manager `nuget` via Homebrew:
 
@@ -94,7 +94,7 @@ I'm Alice
 Hello Alice!
 ```
 
-# 4. Further information
+## 4. Further information
 
 On lexing and parsing in F#
 * https://en.wikibooks.org/wiki/F_Sharp_Programming/Lexing_and_Parsing
