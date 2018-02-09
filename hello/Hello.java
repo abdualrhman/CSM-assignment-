@@ -1,4 +1,5 @@
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.BailErrorStrategy;
 
@@ -21,7 +22,8 @@ public class Hello extends HelloBaseVisitor<String> {
 			String input = System.console().readLine();
 
 			// build the parser for the content of the input
-			HelloLexer lex = new HelloLexer(new ANTLRInputStream(input));
+			CharStream inputStream = CharStreams.fromString(input);
+			HelloLexer lex = new HelloLexer(inputStream);
 			CommonTokenStream tokens = new CommonTokenStream(lex);
 			HelloParser parser = new HelloParser(tokens);
 			parser.setErrorHandler(new BailErrorStrategy());

@@ -5,14 +5,11 @@ open CalculatorTypesAST
 
 // Declare the tokens (terminal symbols)
 %token <float> NUM
-%token TIMES
-%token DIV
-%token PLUS
-%token MINUS
-%token POW
-%token LPAR
-%token RPAR
-%token EOF
+%token TIMES DIV PLUS MINUS POW LPAR RPAR EOF
+
+// Precedence ans associativity
+%left TIMES DIV PLUS MINUS
+%right POW
 
 // Initial non-terminal symbol
 %start start
