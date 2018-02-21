@@ -36,6 +36,17 @@ Invoke the calculator with
 fsharpi Calculator.fsx
 ```
 
+You should be able to interact with the calculator program as follows:
+
+```
+Enter an arithmetic expression: 1
+1.0
+Enter an arithmetic expression: 1 + 2
+3.0
+Enter an arithmetic expression: 1 + 2 * 3
+7.0
+```
+
 ## Instructions for Java/ANTLR
 
 This is instructions assume that you have followed the guidelines to [getting started with Java and ANLTR4](getting-started-java.md) and that you are using a terminal on a folder contaning [Calculator.g](Calculator.g) and [Calculator.java](Calculator.java).
@@ -58,7 +69,7 @@ Run the program with
 java Calculator
 ```
 
-You should be able to interact witht the calculator program as follows:
+You should be able to interact with the calculator program as follows:
 
 ```
 Enter an arithmetic expression: 1
