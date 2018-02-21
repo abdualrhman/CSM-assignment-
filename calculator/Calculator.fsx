@@ -15,7 +15,14 @@ open CalculatorParser
 
 open CalculatorLexer
 
-let x = " 1.0 + 1.0"
+let rec eval e =
+  match e with
+    | Num(x) -> x
+    | TimesExpr(x,y) -> eval(x) * eval (y)
+    | DivExpr(x,y) -> eval(x) / eval (y)
+    | PlusExpr(x,y) -> eval(x) + eval (y)
+    | MinusExpr(x,y) -> eval(x) - eval (y)
+    | PowExpr(x,y) -> eval(x) ** eval (y)
 
 let parse input =
     let lexbuf = LexBuffer<char>.FromString input
@@ -26,10 +33,11 @@ let rec compute n =
     if n = 0 then
         printfn "Bye bye"
     else
-        printfn "Enter an arithmetic expression: "
+        printf "Enter an arithmetic expression: "
         try
-        let r = parse (Console.ReadLine())
-        printfn "Result: %A" r
-        with e -> compute (n-1)
+        let e = parse (Console.ReadLine())
+        printfn "Result: %f" (eval(e))
+        compute n
+        with err -> compute (n-1)
 
 compute 3
