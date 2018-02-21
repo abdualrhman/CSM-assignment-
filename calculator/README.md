@@ -14,8 +14,6 @@ Java/ANTLR4
 
 ## Instructions for F# #/FSLexYacc
 
-Ongoing work!
-
 This is instructions assume that you have followed the guidelines to [getting started with F# and FSLexYacc](getting-started-fs.md) and that you are using a terminal on a folder contaning the F# files mentioned above.
 
 Invoke the lexer generator with 
