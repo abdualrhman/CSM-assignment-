@@ -7,9 +7,10 @@ open CalculatorTypesAST
 %token <float> NUM
 %token TIMES DIV PLUS MINUS POW LPAR RPAR EOF
 
-// Precedence ans associativity
-%left TIMES DIV PLUS MINUS
+// Precedence and associativity
 %right POW
+%left PLUS MINUS
+%left TIMES DIV
 
 // Initial non-terminal symbol
 %start start
