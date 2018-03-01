@@ -29,6 +29,10 @@ To add F# extension to Visual Studio Code:
 * Press `Cmd+P` and install the Ionide F# package by typing `ext install Ionide-fsharp`
 * Follow the rest of the instructions.
 
+### Installing F# on Windows
+
+Go to http://fsharp.org/use/windows/ and select the installation method that better suits you. If using Visual Studio Community you might have to make sure that the F# individual components are installed.
+
 ## 2. Installing FsLexYacc
 
 There are several options for installing the lexer andparser generator [FsLexYacc](http://fsprojects.github.io/FsLexYacc/). See https://www.nuget.org/packages/FsLexYacc/ for a list of such options. You can also use the terminal by first installing the package manager `nuget` via Homebrew:
@@ -43,12 +47,20 @@ and then installing the FsLexYacc in your current folder by entering the followi
 nuget install FsLexYacc
 ```
 
+In Visual Studio Community you may also use the package manager console (under Tools -> NuGet Package Manager -> Package Manager Console) to run:
+
+```
+Install-Package FsLexYacc -Version 7.0.6
+```
+
+or add the package via the Manage NuGet Packages... option in the project solution and installing the FsLexYacc package. Either method builds the package under the project `packages` folder.
+
 
 ## 3. Using the parser generator
 
 The following instructions assume that:
-- fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files. You can also simplify this by making `fslex` and `fsyacc` availbale in your path (see e.g. [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#4-create-links-to-fslex-and-fsyacc-binaries)).
-- The FsLexYaccc libarary is available under `FsLexYacc.Runtime.7.0.6` in folder you are working. Also this can be simplified as explained in [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#5-link-the-runtime-dll-to-your-fsharp-folder)
+- fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files. You can also simplify this by making `fslex` and `fsyacc` availbale in your path (see e.g. [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#4-create-links-to-fslex-and-fsyacc-binaries)). In Windows they can be made available by calling `fslex.exe` and `fsyacc.exe` by adding the path to the command prompt PATH variable (`$env:Path += "C:\...\FsLexYacc.7.0.6\build"` in powershell).
+- The FsLexYaccc library is available under `FsLexYacc.Runtime.7.0.6` in folder you are working. Also this can be simplified as explained in [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#5-link-the-runtime-dll-to-your-fsharp-folder)
 - mono is needed to execute ".exe" executables (if under Windows, then remove "mono")
 - the lexer file is [Hello.fsl](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloLexer.fsl) and it is in the current folder
 - the parser file is [Hello.fsp](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
@@ -82,6 +94,8 @@ Run the F# script `hello.fsx` with the F# interpreter by entering the following 
 ```
 fsharpi Hello.fsx
 ```
+
+In Windows the F# interactive executable may be called `fsi.exe`, and be located in the `C:\Program Files (x86)\Microsoft SDKs\F#\version\Framework\version\` folder.
 
 The program will try to read and parse the answer to a simple question from the console. It will give you three chances to reply with the expected format (`I'm <name>`):
 
