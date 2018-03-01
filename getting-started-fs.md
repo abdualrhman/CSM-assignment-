@@ -7,7 +7,13 @@
 
 ## 1. Installing F# 
 
-### Installing F# and mono on Mac OS/X
+### Installing F# on Windows
+
+Go to http://fsharp.org/use/windows/ and select the installation method that better suits you. If using Visual Studio Community you might have to make sure that the F# individual components are installed.
+
+### Installing F# and mono on Mac OS/X and Linux
+
+The following instructions focus on Mac OS/X but they can be easily adapted to Linux (e.g. by replacing `brew` by some Linux package manager).
 
 Go to http://fsharp.org/use/mac/ and select the installation method that better suits you.
 
@@ -29,41 +35,41 @@ To add F# extension to Visual Studio Code:
 * Press `Cmd+P` and install the Ionide F# package by typing `ext install Ionide-fsharp`
 * Follow the rest of the instructions.
 
-### Installing F# on Windows
-
-Go to http://fsharp.org/use/windows/ and select the installation method that better suits you. If using Visual Studio Community you might have to make sure that the F# individual components are installed.
-
 ## 2. Installing FsLexYacc
 
-There are several options for installing the lexer andparser generator [FsLexYacc](http://fsprojects.github.io/FsLexYacc/). See https://www.nuget.org/packages/FsLexYacc/ for a list of such options. You can also use the terminal by first installing the package manager `nuget` via Homebrew:
+There are several options for installing the lexer and parser generator [FsLexYacc](http://fsprojects.github.io/FsLexYacc/). See https://www.nuget.org/packages/FsLexYacc/ for a list of such options. You can also use the terminal by first installing the package manager `nuget`.
+
+In Mac OS/X you `nuget` can be installed via Homebrew:
 
 ```    
 brew install nuget
 ```
 
-and then installing the FsLexYacc in your current folder by entering the following command in the terminal:
+In Linux you can use some other package manager to achieve the same thing.
+
+Once `nuget` is installed you can used it to install `FsLexYacc` in your current folder by entering the following command in the terminal:
 
 ```
 nuget install FsLexYacc
 ```
 
-In Visual Studio Community you may also use the package manager console (under Tools -> NuGet Package Manager -> Package Manager Console) to run:
+Another option is to use the package manager console of Visual Studio Community (under Tools -> NuGet Package Manager -> Package Manager Console) to run:
 
 ```
 Install-Package FsLexYacc -Version 7.0.6
 ```
 
-or add the package via the Manage NuGet Packages... option in the project solution and installing the FsLexYacc package. Either method builds the package under the project `packages` folder.
+or add the package via the "Manage NuGet Packages..." option in the project solution and installing the `FsLexYacc` package. Either method builds the package under the project `packages` folder.
 
 
 ## 3. Using the parser generator
 
 The following instructions assume that:
-- fslex.exe and fsyacc.exe are available under the folder "FsLexYacc.7.0.6/build/" where you have the lexer and parser files. You can also simplify this by making `fslex` and `fsyacc` availbale in your path (see e.g. [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#4-create-links-to-fslex-and-fsyacc-binaries)). In Windows they can be made available by calling `fslex.exe` and `fsyacc.exe` by adding the path to the command prompt PATH variable (`$env:Path += "C:\...\FsLexYacc.7.0.6\build"` in powershell).
-- The FsLexYaccc library is available under `FsLexYacc.Runtime.7.0.6` in folder you are working. Also this can be simplified as explained in [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#5-link-the-runtime-dll-to-your-fsharp-folder)
-- mono is needed to execute ".exe" executables (if under Windows, then remove "mono")
-- the lexer file is [Hello.fsl](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloLexer.fsl) and it is in the current folder
-- the parser file is [Hello.fsp](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
+- `fslex.exe` and `fsyacc.exe` are available under the folder `FsLexYacc.7.0.6/build/` where you have the lexer and parser files. You can also simplify this by making `fslex` and `fsyacc` available in your path (see e.g. [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#4-create-links-to-fslex-and-fsyacc-binaries)). In Windows they can be made available  `fslex.exe` and `fsyacc.exe` by adding the path to the command prompt `PATH` variable (`$env:Path += "C:\...\FsLexYacc.7.0.6\build"` in powershell).
+- The `FsLexYacc` library is available under `FsLexYacc.Runtime.7.0.6` in the folder you are working. Also this can be simplified as explained in [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#5-link-the-runtime-dll-to-your-fsharp-folder)
+- `mono` is needed to execute ".exe" executables (if under Windows, then ignore `mono` in the below instructions)
+- the lexer file is [`Hello.fsl`](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloLexer.fsl) and it is in the current folder
+- the parser file is [`Hello.fsp`](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
 
 ### Generating the Lexer:
 Execute this command in the terminal:
