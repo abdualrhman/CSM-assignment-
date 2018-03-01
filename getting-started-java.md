@@ -26,7 +26,7 @@ The following instructions assume that:
 
 ### Generating the parse
 
-Execute this command in the terminal:
+Execute this command in the terminal to generate the parser for your grammar:
 
 ```
 antlr4 -visitor Hello.g
@@ -40,7 +40,7 @@ See file [`Hello.java`](hello/Hello.java) for an example.
 
 ### Compiling your program
 
-Execute the following command in the terminal:
+Execute the following command in the terminal to compile your Java program:
 
 ```
 javac *.java
@@ -49,6 +49,8 @@ javac *.java
 This will generate some class files.
 
 ### Running your program
+
+You can now run your Java program with 
 
 ```
 java Hello
