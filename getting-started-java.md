@@ -24,12 +24,12 @@ The following instructions assume that:
 - Command `antlr4` can be found by the terminal
 
 
-### Generating the parse
+### Generating the parser
 
 Execute this command in the terminal to generate the parser for your grammar:
 
 ```
-antlr4 -visitor Hello.g
+antlr4 -visitor -no-listener Hello.g
 ```
 
 This will generate a couple of Java files (`HelloParser.java`, `HelloLexer.java`, etc.)
