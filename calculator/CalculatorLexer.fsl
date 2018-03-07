@@ -1,3 +1,4 @@
+// The generated lexer module will start with this code
 {
 module CalculatorLexer
 open Microsoft.FSharp.Text.Lexing
@@ -5,20 +6,19 @@ open Microsoft.FSharp.Text.Lexing
 open CalculatorParser
 }
 
-// common regex macros
-let char        = ['a'-'z' 'A'-'Z']
+// We define macros for some regular expressions we will use later
 let digit       = ['0'-'9']
-let int         = '-'?digit+
-let float       = '-'?digit+ '.' digit+
 let num         = ('+'|'-')? digit+ ( '.' digit+)?  ('E' ('+'|'-')? digit+ )?
 let whitespace  = [' ' '\t']
 let newline     = "\n\r" | '\n' | '\r'
 
-// rules for recogninzing and building tokens
+// We define now the rules for recognising and building tokens
+// for each of the tokens of our language we need a rule
 rule tokenize = parse
+// deal with tokens that need to be ignored (skip them)
 | whitespace    { tokenize lexbuf }
 | newline       { lexbuf.EndPos <- lexbuf.EndPos.NextLine; tokenize lexbuf; }
-// for each of the tokens of our language we need a rule
+// deal with tokens that need to be built
 | num           { NUM(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
 | '*'           { TIMES }
 | '/'           { DIV }
