@@ -1,15 +1,13 @@
-// This grammar is annotated in a way that it will produce
-// a rather "pure" abstract syntax tree where each node
-// will correspond to a production, thus reducting the need
-// to inspect it in our calculator
+// This is how we specify the name of the grammar
 grammar Calculator;
 
+// Our start non-terminal symbol is "start"
+// NOTE: it is conceptually the start symbol for our purpose
+//       but we can start parsing with any symbol
+// It has only one production, in "formal" notation: start -> expr EOF
 start : expr EOF ;
 
-// Note that the annotation tells ANTLR how to name the parse tree nodes
-// and their children. For example, in the first production we specify
-// that the parse tree's class will use the name "TimesExpr" and the operands
-// will be children called "lhs" and "rhs"
+// These are the productions for non-terminal "expr"
 expr  :               lhs = expr '*' rhs = expr  #TimesExpr
       |               lhs = expr '/' rhs = expr  #DivExpr
       |               lhs = expr '+' rhs = expr  #PlusExpr
@@ -19,7 +17,39 @@ expr  :               lhs = expr '*' rhs = expr  #TimesExpr
       | NUM                                      #NumExpr
       ;
 
+// It has a lot of anntations, if we would remove them the "naked" grammar would look like this:
+// expr  : expr '*' expr
+//       | expr '/' expr
+//       | expr '+' expr
+//       | expr '-' expr
+//       | expr '^' expr
+//       | '(' expr ')'
+//       | NUM
+//       ;
+
+// What is the role of the annotations?
+
+// First, annotations like
+//   lhs = expr
+// allows us to easily access the sub-expression in the AST with name "lhs"
+
+// Second, annotations like
+// #TimesExpr
+// tell ANTLR how to name class of the the AST nodes. In the example,
+// a multiplication will be stored as an object of a class with the name "TimesExpr"
+
+// The annotation <assoc=right> allows us to specify that
+// exponentiation is right-associative.
+// Left-associativity is the default so we don't need annotations for it
+
+// This is how we specify numerical tokens, i.e. numbers in scientific annotation
+// by using a regular expression
 NUM : ('+'|'-')? ('0'..'9')+ ( '.' ('0'..'9')+)?  ('E' ('+'|'-')? ('0'..'9')+ )? ;
 
-// ignore blank spaces
+// Note that, contrary, to the "formal" convention:
+// - non-terminals start with lower case characters
+// - terminals/tokens start with upper case characters
+
+// Another commonly used token is for blank spaces.
+// The part "-> skip" tells ANTLR to throw them away.
 WS    : [ \t\r\n]+ -> skip ;
