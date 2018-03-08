@@ -50,5 +50,5 @@ expression:
 // For example { TimesExpr($1,$3) } specifies that parsing with the production
 // returns the value TimesExpr($1,$3), where $i is the result of parsing
 // component i in the production (in this case the lhs and rhs operands)
-   
+
 %%
