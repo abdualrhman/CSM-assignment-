@@ -108,7 +108,19 @@ public class Calculator {
 		@Override
 		public Double visitNumExpr(CalculatorParser.NumExprContext ctx) {
 			// extract the double value of the number (as a string)
-			return Double.valueOf(ctx.getText());
+			return Double.valueOf(ctx.n.getText());
+		}
+
+		@Override
+		public Double visitUPlusExpr(CalculatorParser.UPlusExprContext ctx) {
+			// extract the double value of the number (as a string)
+			return visit(ctx.e);
+		}
+
+		@Override
+		public Double visitUMinusExpr(CalculatorParser.UMinusExprContext ctx) {
+			// extract the double value of the number (as a string)
+			return - visit(ctx.e);
 		}
 
 		@Override

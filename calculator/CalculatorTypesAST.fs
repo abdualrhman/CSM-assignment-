@@ -9,3 +9,5 @@ type expr =
   | PlusExpr of (expr * expr)
   | MinusExpr of (expr * expr)
   | PowExpr of (expr * expr)
+  | UPlusExpr of (expr)
+  | UMinusExpr of (expr)

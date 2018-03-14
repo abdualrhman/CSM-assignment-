@@ -4,7 +4,8 @@ grammar Calculator;
 // Our start non-terminal symbol is "start"
 // NOTE: it is conceptually the start symbol for our purpose
 //       but we can start parsing with any symbol
-// It has only one production, in "formal" notation: start -> expr EOF
+// It has only one production, in "formal" notation:
+// start -> expr
 start : expr EOF ;
 
 // These are the productions for non-terminal "expr"
@@ -14,10 +15,12 @@ expr  :               lhs = expr '*' rhs = expr  #TimesExpr
       |               lhs = expr '-' rhs = expr  #MinusExpr
       | <assoc=right> lhs = expr '^' rhs = expr  #PowExpr
       | '(' expr ')'                             #NestedExpr
-      | NUM                                      #NumExpr
+      | '+' e = expr                             #UPlusExpr
+      | '-' e = expr                             #UMinusExpr
+      | n = NUM                                  #NumExpr
       ;
 
-// It has a lot of anntations, if we would remove them the "naked" grammar would look like this:
+// It has a lot of annotations, if we would remove them the "naked" grammar would look like this:
 // expr  : expr '*' expr
 //       | expr '/' expr
 //       | expr '+' expr
@@ -44,7 +47,8 @@ expr  :               lhs = expr '*' rhs = expr  #TimesExpr
 
 // This is how we specify numerical tokens, i.e. numbers in scientific annotation
 // by using a regular expression
-NUM : ('+'|'-')? ('0'..'9')+ ( '.' ('0'..'9')+)?  ('E' ('+'|'-')? ('0'..'9')+ )? ;
+//NUM : ('+'|'-')? ('0'..'9')+ ( '.' ('0'..'9')+)?  ('E' ('+'|'-')? ('0'..'9')+ )? ;
+NUM : ('0'..'9')+ ( '.' ('0'..'9')+)?  ('E' ('+'|'-')? ('0'..'9')+ )? ;
 
 // Note that, contrary, to the "formal" convention:
 // - non-terminals start with lower case characters
