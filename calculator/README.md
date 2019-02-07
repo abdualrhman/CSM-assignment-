@@ -52,7 +52,7 @@ This is instructions assume that you have followed the guidelines to [getting st
 Generate the visitor-based parser with
 
 ```
-antlr4 -visitor -no-listener Calculator.java
+antlr4 -visitor -no-listener Calculator.g
 ```
 
 Compile the program with
