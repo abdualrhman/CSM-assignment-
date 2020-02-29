@@ -3,7 +3,7 @@ module HelloLexer
 
 open System
 open HelloParser
-open Microsoft.FSharp.Text.Lexing
+open FSharp.Text.Lexing
 open System.Text
 
 }

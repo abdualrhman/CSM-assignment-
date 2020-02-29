@@ -1,7 +1,7 @@
 // The generated lexer module will start with this code
 {
 module CalculatorLexer
-open Microsoft.FSharp.Text.Lexing
+open FSharp.Text.Lexing
 // open the module that defines the tokens
 open CalculatorParser
 }
