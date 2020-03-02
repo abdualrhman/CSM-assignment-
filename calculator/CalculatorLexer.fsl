@@ -2,6 +2,7 @@
 {
 module CalculatorLexer
 open FSharp.Text.Lexing
+open System
 // open the module that defines the tokens
 open CalculatorParser
 }
