@@ -19,13 +19,13 @@ This is instructions assume that you have followed the guidelines to [getting st
 Invoke the lexer generator with 
 
 ```
-mono FsLexYacc.7.0.6/build/fslex.exe CalculatorLexer.fsl --unicode
+mono FsLexYacc.10.0.0/build/fslex/net46/fslex.exe CalculatorLexer.fsl --unicode
 ```
 
 Invoke the parser generator with 
 
 ```
-mono FsLexYacc.7.0.6/build/fsyacc.exe CalculatorParser.fsp --module CalculatorParser
+mono FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe CalculatorParser.fsp --module CalculatorParser
 ```
 
 Invoke the calculator with
