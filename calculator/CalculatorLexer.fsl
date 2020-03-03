@@ -9,7 +9,6 @@ open CalculatorParser
 
 // We define macros for some regular expressions we will use later
 let digit       = ['0'-'9']
-//let num         = ('+'|'-')? digit+ ( '.' digit+)?  ('E' ('+'|'-')? digit+ )?
 let num         = digit+ ( '.' digit+)?  ('E' ('+'|'-')? digit+ )?
 let whitespace  = [' ' '\t']
 let newline     = "\n\r" | '\n' | '\r'
