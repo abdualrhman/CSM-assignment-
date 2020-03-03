@@ -78,8 +78,8 @@ The following instructions assume that:
 - `fslex.exe` and `fsyacc.exe` are available under the folders `FsLexYacc.10.0.0/build/fslex/net46/` and `FsLexYacc.10.0.0/build/fsyacc/net46/` where you have the lexer and parser files. You can also simplify this by making `fslex` and `fsyacc` available in your path (see e.g. [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#4-create-links-to-fslex-and-fsyacc-binaries)). In Windows they can be made available  `fslex.exe` and `fsyacc.exe` by adding the path to the command prompt `PATH` variable (`$env:Path += "C:\...\FsLexYacc.10.0.0\build"` in powershell).
 - The `FsLexYacc` library is available under `FsLexYacc.Runtime.10.0.0` in the folder you are working. Also this can be simplified as explained in [this guide](https://gist.github.com/AndreasHassing/16567f299b77b0090d94441115a5d031/ae1db7572fd877df733213120800084fbafe9858#5-link-the-runtime-dll-to-your-fsharp-folder)
 - `mono` is needed to execute ".exe" executables (if under Windows, then ignore `mono` in the below instructions)
-- the lexer file is [`Hello.fsl`](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloLexer.fsl) and it is in the current folder
-- the parser file is [`Hello.fsp`](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
+- the lexer file is [`HelloLexer.fsl`](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloLexer.fsl) and it is in the current folder
+- the parser file is [`HelloParser.fsp`](https://gitlab.gbar.dtu.dk/02141/mandatory-assignment/blob/master/hello/HelloParser.fsp) and it is in the current folder
 
 ### Generating the Lexer:
 Execute this command in the terminal:
