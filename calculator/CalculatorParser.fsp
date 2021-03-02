@@ -11,9 +11,10 @@ open CalculatorTypesAST
 
 // Specify precedence and associativity of operators
 // Precedence is given by the order (from low to high)
-%right POW
 %left PLUS MINUS
 %left TIMES DIV
+%right POW
+
 
 // We declare the initial non-terminal symbol
 %start start

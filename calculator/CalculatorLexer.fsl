@@ -15,7 +15,7 @@ let newline     = "\n\r" | '\n' | '\r'
 
 // We define now the rules for recognising and building tokens
 // for each of the tokens of our language we need a rule
-// NOTE: rules are applied in order top-down. 
+// NOTE: rules are applied in order top-down.
 //       This is important when tokens overlap (not in this example)
 rule tokenize = parse
 // deal with tokens that need to be ignored (skip them)
