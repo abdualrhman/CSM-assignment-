@@ -1,7 +1,10 @@
 // This script implements our interactive calculator
+// mono /Users/maqixin/FsLexYacc.10.0.0/build/fslex/net46/fslex.exe CalculatorLexer.fsl --unicode
+// mono /Users/maqixin/FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe CalculatorParser.fsp --module CalculatorPaser
+
 
 // We need to import a couple of modules, including the generated lexer and parser
-#r "/Users/abdulrahman/FsLexYacc.Runtime.10.0.0/lib/net46/FsLexYacc.Runtime.dll"
+#r "/Users/maqixin/FsLexYacc.Runtime.10.0.0/lib/net46/FsLexYacc.Runtime.dll"
 
 open FSharp.Text.Lexing
 open System
@@ -26,6 +29,8 @@ let rec eval e =
     | UPlusExpr (x) -> "{" + eval (x) + "}"
     | UMinusExpr (x) -> "{-" + eval (x) + "}"
     | Var (x) -> x
+    | Array(x,y) -> "{" + x  + "[" + eval(y) + "]" + "}"
+
 
 // We
 let parse input =

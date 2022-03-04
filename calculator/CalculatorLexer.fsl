@@ -18,6 +18,7 @@ let newline     = "\n\r" | '\n' | '\r'
 let var        = char(char|digit)*
 
 
+
 // We define now the rules for recognising and building tokens
 // for each of the tokens of our language we need a rule
 // NOTE: rules are applied in order top-down.
@@ -36,4 +37,6 @@ rule tokenize = parse
 | '('           { LPAR }
 | ')'           { RPAR }
 | eof           { EOF }
-| var          { let str = LexBuffer<_>.LexemeString lexbuf in VAR(str) }
+| var           { let str = LexBuffer<_>.LexemeString lexbuf in VAR(str) }
+|'['            {LBRAC}
+|']'            {RBRAC}
