@@ -11,9 +11,12 @@ System.Globalization.CultureInfo.CurrentCulture <- new System.Globalization.Cult
 
 // We define macros for some regular expressions we will use later
 let digit       = ['0'-'9']
+let char        = ['a'-'z' 'A'-'Z']
 let num         = digit+ ( '.' digit+)?  ('E' ('+'|'-')? digit+ )?
 let whitespace  = [' ' '\t']
 let newline     = "\n\r" | '\n' | '\r'
+let var        = char(char|digit)*
+
 
 // We define now the rules for recognising and building tokens
 // for each of the tokens of our language we need a rule
@@ -33,3 +36,4 @@ rule tokenize = parse
 | '('           { LPAR }
 | ')'           { RPAR }
 | eof           { EOF }
+| var          { let str = LexBuffer<_>.LexemeString lexbuf in VAR(str) }

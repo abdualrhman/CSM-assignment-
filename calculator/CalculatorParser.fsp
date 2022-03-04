@@ -5,7 +5,8 @@ open CalculatorTypesAST
 
 // Declare the tokens (terminal symbols)
 %token <float> NUM
-%token TIMES DIV PLUS MINUS POW LPAR RPAR EOF
+%token <string> VAR
+%token TIMES DIV PLUS MINUS POW LPAR RPAR EOF 
 // NOTE: the actual formats of these tokens are defined in the lexer file
 //       as regular expressions
 
@@ -48,6 +49,9 @@ expression:
   | MINUS expression              { UMinusExpr($2) }
   | NUM                           { Num($1) }
   | LPAR expression RPAR          { $2 }
+  | VAR                           { Var($1) }
+
+
 
 // Again, the code annotation specifies the result of parsing
 // For example { TimesExpr($1,$3) } specifies that parsing with the production
