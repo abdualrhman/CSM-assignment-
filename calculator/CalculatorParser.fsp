@@ -6,7 +6,10 @@ open CalculatorTypesAST
 // Declare the tokens (terminal symbols)
 %token <float> NUM
 %token <string> VAR
-%token TIMES DIV PLUS MINUS POW LPAR RPAR EOF LBRAC RBRAC
+%token TIMES DIV PLUS MINUS POW LPAR RPAR EOF LBRAC RBRAC 
+%token TRUE FALSE AND ANDAND OR OROR NOT EQUAL NOTEQUAL GREATER GREATEREQUAL LESS LESSEQUAL
+%token ASSIGN SKIP SEMICOL IF FI DO OD 
+%token ARROW
 // NOTE: the actual formats of these tokens are defined in the lexer file
 //       as regular expressions
 
@@ -16,21 +19,28 @@ open CalculatorTypesAST
 %left TIMES DIV
 %right POW
 
+%left AND OR
+%right NOT
+//precedence of Boolean is given by the order(from low to high)(QUESION !!! what is %left)
+%left OROR OR AND ANDAND NOT
+
 
 // We declare the initial non-terminal symbol
 %start start
 
 // We specify the return type of each of then non-terminal symbols
-%type <expr> start
+%type <Command> start
 %type <expr> expression
-
+%type <Boolean> Boolean
+%type <Command> Command
+%type <GC> GuardedCommand
 // Grammar productions
 %%
 
 // The first production in "formal" notation is
 // start -> expression
 // here written:
-start: expression EOF             { $1 }
+start: Command EOF             { $1 }
 
 // Note that we need to insert an End-Of-File (EOF)
 // The code annotation { $1 } specifies that parsing with this production
@@ -49,13 +59,49 @@ expression:
   | MINUS expression              { UMinusExpr($2) }
   | NUM                           { Num($1) }
   | LPAR expression RPAR          { $2 }
+  | Var                            {$1}
+ 
+
+Var: 
   | VAR                           { Var($1) }
   | VAR LBRAC expression RBRAC    { Array($1, $3) }
-
 
 // Again, the code annotation specifies the result of parsing
 // For example { TimesExpr($1,$3) } specifies that parsing with the production
 // returns the value TimesExpr($1,$3), where $i is the result of parsing
 // component i in the production (in this case the lhs and rhs operands)
 
-%%
+//%type <Boolean> start
+//%type <Boolean> expression
+
+Boolean :
+| TRUE                                      {True}
+| FALSE                                     {False}
+| Boolean AND Boolean                       {AndExpr($1,$3)}
+| Boolean ANDAND Boolean                    {AndAndExpr($1,$3)}
+| Boolean OR Boolean                        {OrExpr($1,$3)}
+| Boolean OROR Boolean                      {OrOrExpr($1,$3)}
+| NOT Boolean                               {NotExpr($2)}
+| expression EQUAL expression               {EqualExpr($1,$3)}
+| expression NOTEQUAL expression            {NotEqualExpr($1,$3)}
+| expression GREATER expression             {GreaterExpr($1,$3)}
+| expression GREATEREQUAL  expression       {GreaterEqualExpr($1,$3)}
+| expression LESS expression                {LessExpr($1,$3)}
+| expression LESSEQUAL expression           {LessEqualExpr($1,$3)}
+
+
+
+
+Command :
+| Var ASSIGN expression              {AssignExpr($1,$3)}
+| Var ASSIGN expression              {ArrayAssignExpr($1,$3)}
+| SKIP                               {SkipExpr}
+| Command SEMICOL Command            {SEMIExpr($1,$3)}
+| IF  GuardedCommand FI              {IfExpr($2)}
+| DO GuardedCommand OD               {DoExpr($2)}
+
+
+GuardedCommand:
+| Boolean ARROW Command                                  {FunGCExpr($1,$3)}
+| GuardedCommand LBRAC RBRAC GuardedCommand               {ElseIfExpr($1,$4)}
+

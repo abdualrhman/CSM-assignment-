@@ -36,7 +36,30 @@ rule tokenize = parse
 | '^'           { POW }
 | '('           { LPAR }
 | ')'           { RPAR }
-| eof           { EOF }
-| var           { let str = LexBuffer<_>.LexemeString lexbuf in VAR(str) }
 |'['            {LBRAC}
 |']'            {RBRAC}
+|"True"         {TRUE}
+|"False"        {FALSE}
+|'&'            {AND}
+|'|'            {OR}
+|"&&"           {ANDAND}
+|"||"           {OROR}
+|'!'            {NOT}
+|'='            {EQUAL}
+|"!="           {NOTEQUAL}
+|'>'            {GREATER}
+|">="           {GREATEREQUAL}
+|'<'            {LESS}
+|"<="           {LESSEQUAL}
+|":="           {ASSIGN}
+|"Skip"         {SKIP}
+|';'            {SEMICOL}
+|"if"           {IF}
+|"fi"           {FI}
+|"do"           {DO}
+|"od"           {OD}
+| "->"          {ARROW}
+| var           { let str = LexBuffer<_>.LexemeString lexbuf in VAR(str) }
+| eof           { EOF }
+
+
