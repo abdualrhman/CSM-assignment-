@@ -1,10 +1,10 @@
 // The generated lexer module will start with this code
 {
-module CalculatorLexer
+module FM4FUNLexer
 open FSharp.Text.Lexing
 open System
 // open the module that defines the tokens
-open CalculatorParser
+open FM4FUNParser
 // Set the language to English such that 4.0 is parsed as 4 and not 40.
 System.Globalization.CultureInfo.CurrentCulture <- new System.Globalization.CultureInfo("en-US")
 }
@@ -29,6 +29,7 @@ rule tokenize = parse
 | newline       { lexbuf.EndPos <- lexbuf.EndPos.NextLine; tokenize lexbuf; }
 // deal with tokens that need to be built
 | num           { NUM(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
+| "->"          {ARROW}
 | '*'           { TIMES }
 | '/'           { DIV }
 | '+'           { PLUS }
@@ -38,27 +39,26 @@ rule tokenize = parse
 | ')'           { RPAR }
 |'['            {LBRAC}
 |']'            {RBRAC}
-|"True"         {TRUE}
-|"False"        {FALSE}
+|"true"         {TRUE}
+|"false"        {FALSE}
 |'&'            {AND}
 |'|'            {OR}
 |"&&"           {ANDAND}
 |"||"           {OROR}
 |'!'            {NOT}
-|'='            {EQUAL}
 |"!="           {NOTEQUAL}
-|'>'            {GREATER}
 |">="           {GREATEREQUAL}
-|'<'            {LESS}
+|'>'            {GREATER}
 |"<="           {LESSEQUAL}
+|'<'            {LESS}
 |":="           {ASSIGN}
+|'='            {EQUAL}
 |"Skip"         {SKIP}
 |';'            {SEMICOL}
 |"if"           {IF}
 |"fi"           {FI}
 |"do"           {DO}
 |"od"           {OD}
-| "->"          {ARROW}
 | var           { let str = LexBuffer<_>.LexemeString lexbuf in VAR(str) }
 | eof           { EOF }
 

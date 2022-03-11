@@ -1,6 +1,6 @@
 // Open the file that defines the type "expr" we shall use as AST
 %{
-open CalculatorTypesAST
+open FM4FUNTypesAST
 %}
 
 // Declare the tokens (terminal symbols)
@@ -19,10 +19,9 @@ open CalculatorTypesAST
 %left TIMES DIV
 %right POW
 
-%left AND OR
+//precedence of Boolean is given by the order(from low to high)
 %right NOT
-//precedence of Boolean is given by the order(from low to high)(QUESION !!! what is %left)
-%left OROR OR AND ANDAND NOT
+%left OROR OR AND ANDAND
 
 
 // We declare the initial non-terminal symbol

@@ -1,6 +1,6 @@
 // This file implements a module where we define a data type "expr"
 // to store represent arithmetic expressions
-module CalculatorTypesAST
+module FM4FUNTypesAST
 
 type expr =
     | Num of float
@@ -36,7 +36,7 @@ type Command =
     | SEMIExpr          of (Command * Command)
     | IfExpr            of (GC)
     | DoExpr            of (GC)
-type GC = 
+and GC = 
     | FunGCExpr             of (Boolean * Command)
     | ElseIfExpr            of  (GC * GC)
 
