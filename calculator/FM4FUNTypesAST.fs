@@ -40,5 +40,3 @@ and GC =
     | FunGCExpr             of (Boolean * Command)
     | ElseIfExpr            of  (GC * GC)
 
-
-
