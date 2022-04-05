@@ -1,11 +1,15 @@
 // This script implements our interactive calculator
 
+// mono "/Users/arthur/Desktop/DTU/02141 Computer Science Modelling/PA/FsLexYacc.10.0.0/build/fslex/net46/fslex.exe" FM4FUNLexer.fsl --unicode
+// mono "/Users/arthur/Desktop/DTU/02141 Computer Science Modelling/PA/FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe" FM4FUNParser.fsp --module FM4FUNParser
+
+
 // mono /Users/arthur/FsLexYacc.10.0.0/build/fslex/net46/fslex.exe FM4FUNLexer.fsl --unicode
 // mono /Users/arthur//FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe FM4FUNParser.fsp --module FM4FUNParser
 // fsharpi FM4FUN.fsx
 
 // We need to import a couple of modules, including the generated lexer and parser
-#r "/Users/arthur/FsLexYacc.Runtime.10.0.0/lib/net46/FsLexYacc.Runtime.dll"
+#r "/Users/arthur/Desktop/DTU/02141 Computer Science Modelling/PA/FsLexYacc.Runtime.10.0.0/lib/net46/FsLexYacc.Runtime.dll"
 
 open FSharp.Text.Lexing
 open System
@@ -19,7 +23,9 @@ open FM4FUNParser
 #load "FM4FUNLexer.fs"
 open FM4FUNLexer
 
+/////////////////
 //PARSER (TASK 1)
+
 let rec printA e =
     match e with
     | Num (x) -> string x
@@ -53,12 +59,7 @@ let rec printB bool =
 let rec printC (command: Command) =
     match command with
     | AssignExpr (x, y) -> "ASSIGNVAR(" + printA (x) + "," + printA (y) + ")"
-    | ArrayAssignExpr (x, y) ->
-        "ASSIGNARRAY("
-        + printA (x)
-        + ","
-        + printA (y)
-        + ")"
+    | ArrayAssignExpr (x, y) ->"ASSIGNARRAY(" + printA (x) + ","+ printA (y) + ")"
     | SkipExpr -> "SKIP"
     | SEMIExpr (x, y) -> "SEMICOLON(" + printC (x) + "," + printC (y) + ")"
     | IfExpr (x) -> "IF(" + printGC (x) + ")"
@@ -69,6 +70,7 @@ and printGC (guardedCommand: GC) =
     | FunGCExpr (x, y) -> "FUNGC(" + printB (x) + "," + printC (y) + ")"
     | ElseIfExpr (x, y) -> "FUNGC(" + printGC (x) + "," + printGC (y) + ")"
 
+/////////////////////////////////
 //GENERATE PROGRAM GRAPH (TASK 2)
 let mutable nodeID = 1
 
@@ -82,89 +84,73 @@ let rec edgesC start finish c =
     | AssignExpr (x, a) -> [ C(start, AssignExpr(x, a), finish) ]
     | SkipExpr -> [ C(start, SkipExpr, finish) ]
     | SEMIExpr (x, y) ->
-        let q = fresh ()
-        let E1 = edgesC start q x
-        let E2 = edgesC q finish y
-        E1 @ E2
-
+                        let q = fresh ()
+                        let E1 = edgesC start q x
+                        let E2 = edgesC q finish y
+                        E1 @ E2
     | IfExpr (x) -> edgesGC start finish x
     | DoExpr (x) ->
-        let b = doneF x
-        let E = edgesGC start start x
-        E @ [ GC(start, b, finish) ]
+                    let b = doneF x
+                    let E = edgesGC start start x 
+                    (E @ [ GC(start, b, finish) ])
     | _ -> []
 
 and edgesGC start finish gc =
     match gc with
     | FunGCExpr (x, y) ->
-        let q = fresh ()
-        let E = edgesC q finish y
-        [ GC(start, x, q) ] @ E
+                        let q = fresh ()
+                        let E = edgesC q finish y
+                        [ GC(start, x, q) ] @ E
     | ElseIfExpr (x, y) ->
-        let E1 = edgesGC start finish x
-        let E2 = edgesGC start finish y
-        E1 @ E2
+                        let E1 = edgesGC start finish x
+                        let E2 = edgesGC start finish y
+                        E1 @ E2
 
 and doneF a =
     match a with
     | FunGCExpr (x, y) -> (NotExpr(x))
     | ElseIfExpr (x, y) -> AndExpr(doneF x, doneF y)
 
-let rec DEdgesC start finish c =
+let rec DEdgesC start finish c=
     match c with
     | AssignExpr (x, a) -> [ C(start, AssignExpr(x, a), finish) ]
     | SkipExpr -> [ C(start, SkipExpr, finish) ]
     | SEMIExpr (x, y) ->
-        let q = fresh ()
-        let E1 = DEdgesC start q x
-        let E2 = DEdgesC q finish y
-        E1 @ E2
+                        let q = fresh ()
+                        let E1 = DEdgesC start q x 
+                        let E2 = DEdgesC q finish y 
+                        E1 @ E2
 
     | IfExpr (x) ->
-        let (E, d) = DEdgesGC start finish x False
-        E
+                    let (E, d) = DEdgesGC start finish x False
+                    E
     | DoExpr (x) ->
-        let (E, d) = DEdgesGC start start x False
-        E @ [ GC(start, NotExpr(d), finish) ]
+                    let (E, d) = DEdgesGC start start x False
+                    E @ [ GC(start, NotExpr(d), finish) ]
     | _ -> []
 
 and DEdgesGC start finish gc d =
     match gc with
     | FunGCExpr (x, y) ->
-        let q = fresh ()
-        let E = edgesC q finish y
-        ([ GC(start, AndExpr(x, NotExpr(d)), q) ] @ E), OrExpr(x, d)
+                    let q = fresh ()
+                    let E = edgesC q finish y
+                    ([ GC(start, AndExpr(x, NotExpr(d)), q) ] @ E), OrExpr(x, d)
     | ElseIfExpr (x, y) ->
-        let (E1, d1) = DEdgesGC start finish x d
-        let (E2, d2) = DEdgesGC start finish y d1
-        (E1 @ E2, d2)
+                    let (E1, d1) = DEdgesGC start finish x d
+                    let (E2, d2) = DEdgesGC start finish y d1
+                    (E1 @ E2, d2)
 
 let rec convToGraph (lst: Graph) =
     match lst with
     | [] -> ""
     | C (a, b, c) :: rest ->
-        match (a, c) with
-        | (Node (x), Node (y)) ->
-            " q"
-            + string x
-            + " -> q"
-            + string y
-            + " [label = \""
-            + string b
-            + "\"] \n"
-            + convToGraph rest
+            match (a, c) with
+            | (Node (x), Node (y)) -> " q" + string x+ " -> q"+ string y + " [label = \""+ string b+ "\"] \n"+ convToGraph rest
     | GC (a, b, c) :: rest ->
-        match (a, c) with
-        | (Node (x), Node (y)) ->
-            " q"
-            + string x
-            + " -> q"
-            + string y
-            + " [label = \""
-            + string b
-            + "\"] \n"
-            + convToGraph rest
+            match (a, c) with
+            | (Node (x), Node (y)) ->" q"+ string x+ " -> q"+ string y+ " [label = \""+ string b+ "\"] \n"+ convToGraph rest
 
+//////////////////////
 //INTERPRETER (TASK 3)
 
 let rec evalB bool mem =
@@ -206,8 +192,8 @@ and evalC command mem =
     match command with
     | SkipExpr -> mem
     | AssignExpr (x, expr) ->
-        let memory = mem |> Map.add x (evalA expr mem)
-        memory
+                            let memory = mem |> Map.add x (evalA expr mem)
+                            memory
 
 let rec searchEdges (graph: Graph) node =
     match (graph, node) with
@@ -224,11 +210,134 @@ let rec searchEdges (graph: Graph) node =
 let rec Inter node listEdges mem edges =
     match listEdges with
     | [] -> mem
-    | C (a, b, c) :: tail -> Inter c (searchEdges edges c) (evalC b mem) edges
-    | GC (a, b, c) :: tail when (evalB b mem) -> Inter c (searchEdges edges c) mem edges
-    | GC (a, b, c) :: tail -> Inter node (tail) mem edges
+    | C (_, b, c) :: _ -> Inter c (searchEdges edges c) (evalC b mem) edges
+    | GC (_, b, c) :: _ when (evalB b mem) -> Inter c (searchEdges edges c) mem edges
+    | GC (_,_,_) :: tail -> Inter node (tail) mem edges
 
+///////////////////////////////
+//PROGRAM VERIFICATION (TASK 4)
+
+// let rec edgesC start finish c coveringNodes=
+//     match c with
+//     | AssignExpr (x, a) -> ([ C(start, AssignExpr(x, a), finish) ],coveringNodes)
+//     | SkipExpr -> ([ C(start, SkipExpr, finish) ],coveringNodes)
+//     | SEMIExpr (x, y) ->
+//                         let q = fresh ()
+//                         let E1,cn = edgesC start q x coveringNodes
+//                         let E2,cn2 = edgesC q finish y cn
+//                         (E1 @ E2,cn2)
+//     | IfExpr (x) -> edgesGC start finish x coveringNodes
+//     | DoExpr (x) ->
+//                     let b = doneF x
+//                     let E,cn = edgesGC start start x (coveringNodes @ [start])
+//                     (E @ [ GC(start, b, finish) ],cn)
+//     |_ -> [],[]
+
+// and edgesGC start finish gc coveringNodes =
+//     match gc with
+//     | FunGCExpr (x, y) ->
+//                         let q = fresh ()
+//                         let E,cn = edgesC q finish y coveringNodes
+//                         [ GC(start, x, q) ] @ E,coveringNodes
+//     | ElseIfExpr (x, y) ->
+//                         let E1,cn = edgesGC start finish x coveringNodes
+//                         let E2,cn2 = edgesGC start finish y cn
+//                         (E1 @ E2,cn2)
+
+// and doneF a =
+//     match a with
+//     | FunGCExpr (x, y) -> (NotExpr(x))
+//     | ElseIfExpr (x, y) -> AndExpr(doneF x, doneF y)
+
+// let rec ShorestPath (Path : List<Edges>*List<Node>) = 
+//     match Path with 
+//     | C(x,y,z)::etail,q::ntail -> 
+
+///////////////////////////
+//PROGRAM ANALYSIS (TASK 5)
+
+let sign x=
+    match x with
+    |x_ when x_>0.0 ->"+"
+    |x_ when x_=0.0 ->"0"
+    |_              ->"-"
+
+let OPmult sign1 sign2=
+    match (sign1,sign2) with
+    |(s1,s2) when (s1="-" && s2="-") || (s1="+" && s2="+") ->Set.empty.Add("+")
+    |(s1,s2) when (s1="-" && s2="+") || (s1="+" && s2="-") ->Set.empty.Add("-")
+    |(s1,s2) when (s1="0" || s2="0") ->Set.empty.Add("0")
+    | _ -> failwith "Unexpected OPadd match case"  
+
+let OPdiv sign1 sign2=
+    match (sign1,sign2) with
+    |(s1,s2) when (s1="-" && s2="-") || (s1="+" && s2="+") ->Set.empty.Add("+")
+    |(s1,s2) when (s1="-" && s2="+") || (s1="+" && s2="-") ->Set.empty.Add("-")
+    |(_,s2)  when s2="0" ->failwith "ERROR: Division by 0!!!"
+    |(s1,_)  when s1="0" ->Set.empty.Add("0")
+    | _ -> failwith "Unexpected OPdiv match case"
+
+let OPadd sign1 sign2=
+    match (sign1,sign2) with
+    |(s1,s2) when (s1="+" && s2="0") || (s1="+" && s2="+") || (s1="0" && s2="+") ->Set.empty.Add("+")
+    |(s1,s2) when (s1="-" && s2="0") || (s1="-" && s2="-") || (s1="0" && s2="-") ->Set.empty.Add("-")
+    |(s1,s2) when (s1="0" && s2="0") ->Set.empty.Add("0")
+    |(s1,s2) when (s1="+" && s2="-") || (s1="-" && s2="+") ->Set.empty.Add("-").Add("+").Add("0")  
+    | _ -> failwith "Unexpected OPadd match case"  
+
+let OPsub sign1 sign2=
+    match (sign1,sign2) with
+    |(s1,s2) when (s1="+" && s2="0") || (s1="+" && s2="-") || (s1="0" && s2="-") ->Set.empty.Add("+")
+    |(s1,s2) when (s1="-" && s2="0") || (s1="0" && s2="+") || (s1="-" && s2="+") ->Set.empty.Add("-")
+    |(s1,s2) when (s1="0" && s2="0") ->Set.empty.Add("0")
+    |(s1,s2) when (s1="-" && s2="+") || (s1="+" && s2="+") ->Set.empty.Add("-").Add("+").Add("0")  
+    | _ -> failwith "Unexpected OPsub match case"  
+
+let OPpow sign1 sign2=
+    match (sign1,sign2) with
+    |(_,s2) when s2="0" ->Set.empty.Add("+")
+    |(s1,_) when s1="0" ->Set.empty.Add("0")
+    |(s1,s2) when s1="-" && s2="+" -> Set.empty.Add("+").Add("-")  
+    | _ -> failwith "Unexpected OPpow match case"  
+
+let rec OP lst1 lst2 operator=
+    match (lst1,lst2,operator) with
+    |([],_,_)->Set.empty
+    |(_,[],_)->Set.empty
+    |(sign1::tail1,sign2::tail2,op) when op="*" -> let set1 = OPmult sign1 sign2
+                                                   let set2 = Set.union set1 (OP [sign1] tail2 "*")
+                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "*")
+    |(sign1::tail1,sign2::tail2,op) when op="/" -> let set1 = OPdiv sign1 sign2
+                                                   let set2 = Set.union set1 (OP [sign1] tail2 "/")
+                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "/")
+    |(sign1::tail1,sign2::tail2,op) when op="+" -> let set1 = OPadd sign1 sign2
+                                                   let set2 = Set.union set1 (OP [sign1] tail2 "+")
+                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "+")
+    |(sign1::tail1,sign2::tail2,op) when op="-" -> let set1 = OPsub sign1 sign2
+                                                   let set2 = Set.union set1 (OP [sign1] tail2 "-")
+                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "-")
+    |(sign1::tail1,sign2::tail2,op) when op="^" -> let set1 = OPpow sign1 sign2
+                                                   let set2 = Set.union set1 (OP [sign1] tail2 "^")
+                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "^") 
+    |_ -> failwith "unefined operator in OP"                                              
+
+let rec analysisFA expr absMem =
+    let nonNegArraySigns = Set.empty.Add("+").Add("0")
+    match expr with
+    |Num(x) -> Set.empty.Add(sign x)
+    |Var(x) -> Set.empty.Add(sign (absMem |> Map.find (Var x)))
+    |TimesExpr(a,b) -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("*")
+    |DivExpr(a,b)   -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("/")
+    |PlusExpr(a,b)  -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("+")
+    |MinusExpr(a,b) -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("-")
+    |PowExpr(a,b)   -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("^")
+    |Array(a,b) when not(Set.isEmpty(Set.intersect (analysisFA b absMem) nonNegArraySigns)) -> Set.empty.Add(sign (absMem |> Map.find (Var a)))
+    |Array(_,b) when Set.isEmpty(Set.intersect (analysisFA b absMem) nonNegArraySigns) -> Set.empty
+    |_ -> failwith "Unexpected expr type."
+
+///////////
 //COMPUTING
+
 let parse input =
     // translate string into a buffer of characters
     let lexbuf = LexBuffer<char>.FromString input
@@ -245,26 +354,11 @@ let task2Printer e =
         printfn "Wrong input!"
         failwith "Please try again"
     elif string b = "1" then
-        let PG =
-            (convToGraph (edgesC (Node(0)) (Node(-1)) e))
-                .Replace("-1", "End")
-                .Replace("Var \"", "Var '")
-                .Replace("\",", "',")
-            + "\n}"
-
+        let PG =(convToGraph (edgesC (Node(0)) (Node(-1)) e)).Replace("-1", "End").Replace("Var \"", "Var '").Replace("\",", "',")+ "\n}"
         printfn "\n COPY TO https://dreampuf.github.io/GraphvizOnline/: \n\n digraph G {\n\n%s" PG
 
     elif string b = "2" then
-        let PG =
-            (convToGraph (DEdgesC (Node(0)) (Node(-1)) e))
-                .Replace("\n", " ")
-                .Replace("-1", "End")
-                .Replace("Var \"", "Var '")
-                .Replace("\",", "',")
-                .Replace("]", "]\n")
-                .Replace("  ", "")
-            + "\n}"
-
+        let PG =(convToGraph (DEdgesC (Node(0)) (Node(-1)) e)).Replace("\n", " ").Replace("-1", "End").Replace("Var \"", "Var '").Replace("\",", "',").Replace("]", "]\n").Replace("  ", "")+ "\n}"
         printfn "\n COPY TO https://dreampuf.github.io/GraphvizOnline/: \n\n digraph G {\n\n%s" PG
 
 let rec spaceRemover (stringList: list<string>) =
@@ -295,6 +389,8 @@ let outputFunction i e =
     | x when x = "1" -> printfn "Parser for your GCL: %s\n" (printC (e))
     | x when x = "2" -> task2Printer e
     | x when x = "3" -> printfn "Your final memory is: %A" (task3Printer e)
+    //| x when x = "4" -> 
+    //| x when x = "5" -> printfn "Your abstract memory is: %A" (task5Printer e)
     | _ -> failwith "Task not available. Please try again"
 
 // We implement here the function that interacts with the user

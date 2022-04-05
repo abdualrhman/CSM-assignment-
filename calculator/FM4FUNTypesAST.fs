@@ -50,3 +50,16 @@ type Edges =
     | GC of Node * Boolean * Node
 
 type Graph = Edges List
+
+
+type Predicate =
+    | TruePre 
+    | ORPre of (Predicate * Predicate)
+    | AndPre of (Predicate * Predicate)
+    | NotPre of Predicate
+    | ImplyPre of (Predicate * Predicate)
+     
+// type Sign =
+//     |Neg of string
+//     |Pos of string
+//     |Zero of string
