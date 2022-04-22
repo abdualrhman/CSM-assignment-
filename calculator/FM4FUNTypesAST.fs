@@ -60,6 +60,7 @@ type Predicate =
     | ImplyPre of (Predicate * Predicate)
      
 // type Sign =
-//     |Neg of string
-//     |Pos of string
-//     |Zero of string
+//     |Neg
+//     |Pos
+//     |Zero
+

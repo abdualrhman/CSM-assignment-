@@ -412,27 +412,120 @@ let rec signAnalysisB bool absMem =
     | NotExpr(b1) -> boolOP (Set.toList (signAnalysisB b1 absMem)) [] "not"
     | _ -> failwith "Unexpected signAnalysisB match case"
 
-let sem command absMem = 
+
+///////////
+//SECURITY ANALYSIS (TASK 6)
+
+let rec fv expr =
+    match expr with
+    |Num(_) -> Set.empty
+    |Var(x)-> Set.empty.Add(x)
+    |Array(s,e1) -> fv e1
+    |TimesExpr(e1,e2)-> Set.union (fv e1) (fv e2)
+    |DivExpr(e1,e2)-> Set.union (fv e1) (fv e2)
+    |PlusExpr(e1,e2)-> Set.union (fv e1) (fv e2)
+    |MinusExpr(e1,e2)-> Set.union (fv e1) (fv e2)
+    |PowExpr(e1,e2)-> Set.union (fv e1) (fv e2)
+    |UMinusExpr(e1)-> fv e1
+    |UPlusExpr(e1)-> fv e1
+
+let rec fvB bool =
+    match bool with
+    | True -> Set.empty
+    | False -> Set.empty
+    | AndExpr(b1,b2) -> Set.union (fvB b1) (fvB b2)
+    | AndAndExpr(b1,b2) -> Set.union (fvB b1) (fvB b2)
+    | OrExpr(b1,b2) -> Set.union (fvB b1) (fvB b2)
+    | OrOrExpr(b1,b2) -> Set.union (fvB b1) (fvB b2)
+    | NotExpr(b1) -> fvB b1
+    | EqualExpr(e1,e2) -> Set.union (fv e1) (fv e2)
+    | NotEqualExpr(e1,e2) -> Set.union (fv e1) (fv e2)
+    | GreaterExpr(e1,e2) -> Set.union (fv e1) (fv e2)
+    | GreaterEqualExpr(e1,e2) -> Set.union (fv e1) (fv e2)
+    | LessExpr(e1,e2) -> Set.union (fv e1) (fv e2)
+    | LessEqualExpr(e1,e2) -> Set.union (fv e1) (fv e2)
+
+let rec flowF (lst1: String list) (lst2: String list) =
+    match (lst1,lst2) with
+    |([],_) -> Set.empty
+    |(_,[]) -> Set.empty
+    |(h1::t1,h2::t2) -> 
+        let set1 = Set.empty.Add((h1,h2))
+        let set2 = flowF [h1] t2
+        let set3 = flowF t1 ([h2]@t2)
+        Set.union (Set.union set1 set2) set3
+                                                  
+let rec sec command setX =
     match command with
-    |IfExpr(gc) -> match gc with
-                   |FunGCExpr(b,_) when (signAnalysisB b absMem).Contains("tt")-> absMem
-                   |FunGCExpr(_,_) -> Map.empty
-                   | _ -> failwith "Unexpected gc match case at sem match case"
-    |AssignExpr(e1,e2) -> absMem |> Map.add e1 (signAnalysisA e2 absMem)
-    |_ -> failwith "Unexpected sem match case"
-    
+    |AssignExpr(Var(x),e2) -> 
+            let f1 = Set.union setX (fv e2)
+            let f2 = Set.empty.Add(x)
+            flowF (Set.toList f1) (Set.toList f2)
+    |ArrayAssignExpr(Array(A,a1),a2) -> 
+            let f1 = Set.union setX (fv a1)
+            let f2 = Set.union f1 (fv a2)
+            let f3 = Set.empty.Add(A)
+            flowF (Set.toList f2) (Set.toList f3)
+    |SkipExpr-> Set.empty
+    |SEMIExpr(c1,c2) -> 
+            let set1 = sec c1 setX
+            let set2 = sec c2 setX
+            Set.union set1 set2
+    |IfExpr(gc) ->
+            let (w,d) = sec2 gc (False,setX)
+            w
+    |DoExpr(gc) -> 
+            let (w,d) = sec2 gc (False, setX)
+            w
+    | _ -> failwith "Unexpected sec match case"
 
-let rec workListH edgeList powerSet = 
+and sec2 gcommand (d,setX) =
+    match gcommand with
+    |FunGCExpr(b,c) -> 
+            let w = sec c (Set.union (Set.union setX (fvB b)) (fvB d))
+            (w,OrExpr(b,d))
+    |ElseIfExpr(gc1,gc2) ->
+            let (w1,d1) = sec2 gc1 (d,setX)
+            let (w2,d2) = sec2 gc2 (d1,setX)
+            (Set.union w1 w2, d2)
 
-    match edgeList with
-    |[] -> powerSet
-    |edge::tail -> workListH tail (powerSet |> Set.add (Map.empty |> Map.add edge Set.empty))
+let rec allowedFlows (secLattice: Map<String,Set<String>>) secClassification keyList =
+    match keyList with
+    |[] -> Set.empty
+    |key::tail -> let securityLevel = Map.find key secClassification
+                  let lattice = Map.find securityLevel secLattice
+                  let allowedMap = secClassification |> Map.filter (fun _ security -> lattice.Contains(security) )
+                  let set1 = flowF [key] ((allowedMap |> Map.keys) |> Seq.toList)
+                  Set.union  set1 (allowedFlows secLattice secClassification tail)
 
-let rec workList edgeList (absMem: Map<expr,Set<string>>) powerSet =
-    powerSet |> Set.add (absMem)
+//returns "obvious" security lattice, e.g. private<public to private -> (private,public)
+let rec latticeIn (stringList: list<string>) (memo) : Map<String,Set<String>> =
+    match stringList with
+    | [] -> memo
+    | s :: tail ->
+        let key = s.Split("<")
+        let memory =
+            let memory1 = 
+                if  (memo |> Map.containsKey key.[0]) 
+                then memo |> Map.add (key.[0]) (Set.union (memo |> Map.find key.[0]) (Set.empty.Add(key.[1])))
+                else memo |> Map.add (key.[0]) (Set.empty.Add(key.[1]).Add(key.[0]))
+            let memory2 =
+                if not(memory1 |> Map.containsKey key.[1])
+                then memory1 |> Map.add (key.[1]) (Set.empty.Add(key.[1]))
+                else memory1
+            memory2
+        latticeIn tail memory          
 
-
-
+//updates the security lattice, e.g. private<public, public<super to private -> (private, public, super)
+let rec latticeUpdate (stringList: string list) lattice =
+    match stringList with
+    |[] -> lattice
+    |s::tail ->
+        let key = s.Split("<")
+        let set1 = lattice |> Map.find key.[0]
+        let set2 = lattice |> Map.find key.[1]
+        let newLattice = lattice |> Map.add (key.[0]) (Set.union set1 set2)
+        latticeUpdate tail newLattice
 
 
 ///////////
@@ -484,13 +577,45 @@ let task3Printer e =
     let edges = edgesC (Node(0)) (Node(-1)) e
     Inter (Node(0)) (searchEdges edges (Node(0))) (memory) edges
 
+//returns a security classification for variables and arrays.
+let rec eqRemover6 (stringList: list<string>) memo =
+    match stringList with
+    | [] -> memo
+    | s :: tail ->
+        let key = s.Split("=")
+        let memory = memo |> Map.add (key.[0]) (key.[1])
+        eqRemover6 tail memory
+
+let task6Printer e =
+    printfn "Please enter the security lattice in the following format:"
+    printfn "public < private, private < confidential etc..."
+    let inputLattice = Console.ReadLine()
+    let arr_ = spaceRemover ((inputLattice.Split(",")) |> Array.toList)
+    let lattice_ = latticeIn arr_ Map.empty
+    let lattice = latticeUpdate arr_ lattice_
+    printfn "Please enter the security classificaiton for variables and arrays in the following format:"
+    printfn "m = public, n = private, r = confidential etc..."
+    let inputClassification = Console.ReadLine()
+    let arr2_ = spaceRemover ((inputClassification.Split(",")) |> Array.toList)
+    let securityClassification = eqRemover6 arr2_ Map.empty
+    printfn "\n\nHERE ARE YOUR RESULTS\n"
+    let actualflows =  sec e Set.empty
+    printfn "Actual flows: %A" actualflows
+    let keyList = (securityClassification |> Map.keys)|> Seq.toList
+    let allowedflows = allowedFlows (lattice) (securityClassification) keyList
+    printfn "Allowed flows: %A" allowedflows
+    if (Set.isSubset actualflows allowedflows) then printfn "The program is secure."
+    else printfn "The program is not secure. Violations are: %A" (Set.difference actualflows allowedflows)
+
+
 let outputFunction i e =
     match i with
     | x when x = "1" -> printfn "Parser for your GCL: %s\n" (printC (e))
     | x when x = "2" -> task2Printer e
     | x when x = "3" -> printfn "Your final memory is: %A" (task3Printer e)
-    //| x when x = "4" -> 
-    //| x when x = "5" -> printfn "Your abstract memory is: %A" (task5Printer e)
+    //| x when x = "4" -> "Sorry, this task has not been implemented."
+    //| x when x = "5" -> "Sorry, this task has not been implemented."
+    | x when x = "6" -> task6Printer e
     | _ -> printfn "Task not available. Please try again"
 
 // We implement here the function that interacts with the user
