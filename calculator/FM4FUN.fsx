@@ -1,11 +1,13 @@
 // This script implements our interactive calculator
 
+// ARTHUR'S COPY PASTE CODE:
 // mono "/Users/arthur/Desktop/DTU/02141 Computer Science Modelling/PA/FsLexYacc.10.0.0/build/fslex/net46/fslex.exe" FM4FUNLexer.fsl --unicode
 // mono "/Users/arthur/Desktop/DTU/02141 Computer Science Modelling/PA/FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe" FM4FUNParser.fsp --module FM4FUNParser
+// fsharpi FM4FUN.fsx
 
-
-// mono /Users/arthur/FsLexYacc.10.0.0/build/fslex/net46/fslex.exe FM4FUNLexer.fsl --unicode
-// mono /Users/arthur//FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe FM4FUNParser.fsp --module FM4FUNParser
+// MARK'S COPY PASTE CODE
+// mono /Users/maqixin/FsLexYacc.10.0.0/build/fslex/net46/fslex.exe FM4FUNLexer.fsl --unicode
+// mono /Users/maqixin/FsLexYacc.10.0.0/build/fsyacc/net46/fsyacc.exe FM4FUNParser.fsp --module FM4FUNParser
 // fsharpi FM4FUN.fsx
 
 // We need to import a couple of modules, including the generated lexer and parser
@@ -120,7 +122,6 @@ let rec DEdgesC start finish c=
                         let E1 = DEdgesC start q x 
                         let E2 = DEdgesC q finish y 
                         E1 @ E2
-
     | IfExpr (x) ->
                     let (E, d) = DEdgesGC start finish x False
                     E
@@ -187,6 +188,7 @@ and evalA expr mem =
     | TimesExpr (x, y) -> evalA x mem * evalA y mem
     | PowExpr (x, y) -> evalA x mem ** evalA y mem
     | UMinusExpr (x) -> -(evalA x mem)
+    | _ -> failwith "Unexpected evalA expr type"
 
 and evalC command mem =
     match command with
@@ -194,6 +196,7 @@ and evalC command mem =
     | AssignExpr (x, expr) ->
                             let memory = mem |> Map.add x (evalA expr mem)
                             memory
+    | _ -> failwith "Unexpected evalC command type"
 
 let rec searchEdges (graph: Graph) node =
     match (graph, node) with
@@ -262,78 +265,175 @@ let sign x=
     |x_ when x_=0.0 ->"0"
     |_              ->"-"
 
-let OPmult sign1 sign2=
+let aritOPmult sign1 sign2=
     match (sign1,sign2) with
     |(s1,s2) when (s1="-" && s2="-") || (s1="+" && s2="+") ->Set.empty.Add("+")
     |(s1,s2) when (s1="-" && s2="+") || (s1="+" && s2="-") ->Set.empty.Add("-")
     |(s1,s2) when (s1="0" || s2="0") ->Set.empty.Add("0")
-    | _ -> failwith "Unexpected OPadd match case"  
+    | _ -> failwith "Unexpected aritOPadd match case"  
 
-let OPdiv sign1 sign2=
+let aritOPdiv sign1 sign2=
     match (sign1,sign2) with
     |(s1,s2) when (s1="-" && s2="-") || (s1="+" && s2="+") ->Set.empty.Add("+")
     |(s1,s2) when (s1="-" && s2="+") || (s1="+" && s2="-") ->Set.empty.Add("-")
     |(_,s2)  when s2="0" ->failwith "ERROR: Division by 0!!!"
     |(s1,_)  when s1="0" ->Set.empty.Add("0")
-    | _ -> failwith "Unexpected OPdiv match case"
+    | _ -> failwith "Unexpected aritOPdiv match case"
 
-let OPadd sign1 sign2=
+let aritOPadd sign1 sign2=
     match (sign1,sign2) with
     |(s1,s2) when (s1="+" && s2="0") || (s1="+" && s2="+") || (s1="0" && s2="+") ->Set.empty.Add("+")
     |(s1,s2) when (s1="-" && s2="0") || (s1="-" && s2="-") || (s1="0" && s2="-") ->Set.empty.Add("-")
     |(s1,s2) when (s1="0" && s2="0") ->Set.empty.Add("0")
     |(s1,s2) when (s1="+" && s2="-") || (s1="-" && s2="+") ->Set.empty.Add("-").Add("+").Add("0")  
-    | _ -> failwith "Unexpected OPadd match case"  
+    | _ -> failwith "Unexpected aritOPadd match case"  
 
-let OPsub sign1 sign2=
+let aritOPsub sign1 sign2=
     match (sign1,sign2) with
     |(s1,s2) when (s1="+" && s2="0") || (s1="+" && s2="-") || (s1="0" && s2="-") ->Set.empty.Add("+")
     |(s1,s2) when (s1="-" && s2="0") || (s1="0" && s2="+") || (s1="-" && s2="+") ->Set.empty.Add("-")
     |(s1,s2) when (s1="0" && s2="0") ->Set.empty.Add("0")
     |(s1,s2) when (s1="-" && s2="+") || (s1="+" && s2="+") ->Set.empty.Add("-").Add("+").Add("0")  
-    | _ -> failwith "Unexpected OPsub match case"  
+    | _ -> failwith "Unexpected aritOPsub match case"  
 
-let OPpow sign1 sign2=
+let aritOPpow sign1 sign2=
     match (sign1,sign2) with
     |(_,s2) when s2="0" ->Set.empty.Add("+")
     |(s1,_) when s1="0" ->Set.empty.Add("0")
-    |(s1,s2) when s1="-" && s2="+" -> Set.empty.Add("+").Add("-")  
-    | _ -> failwith "Unexpected OPpow match case"  
+    |(s1,s2) when s1="-" && s2="+" -> Set.empty.Add("+").Add("-") 
+    |(s1,_) when s1="+" -> Set.empty.Add("+").Add("-")  
+    | _ -> failwith "Unexpected aritOPpow match case"  
 
-let rec OP lst1 lst2 operator=
+let rec aritOP lst1 lst2 operator=
     match (lst1,lst2,operator) with
     |([],_,_)->Set.empty
     |(_,[],_)->Set.empty
-    |(sign1::tail1,sign2::tail2,op) when op="*" -> let set1 = OPmult sign1 sign2
-                                                   let set2 = Set.union set1 (OP [sign1] tail2 "*")
-                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "*")
-    |(sign1::tail1,sign2::tail2,op) when op="/" -> let set1 = OPdiv sign1 sign2
-                                                   let set2 = Set.union set1 (OP [sign1] tail2 "/")
-                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "/")
-    |(sign1::tail1,sign2::tail2,op) when op="+" -> let set1 = OPadd sign1 sign2
-                                                   let set2 = Set.union set1 (OP [sign1] tail2 "+")
-                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "+")
-    |(sign1::tail1,sign2::tail2,op) when op="-" -> let set1 = OPsub sign1 sign2
-                                                   let set2 = Set.union set1 (OP [sign1] tail2 "-")
-                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "-")
-    |(sign1::tail1,sign2::tail2,op) when op="^" -> let set1 = OPpow sign1 sign2
-                                                   let set2 = Set.union set1 (OP [sign1] tail2 "^")
-                                                   Set.union set2 (OP tail1 ([sign2]@tail2) "^") 
-    |_ -> failwith "unefined operator in OP"                                              
+    |(sign1::tail1,sign2::tail2,op) when op="*" -> 
+                                                   let set1 = aritOPmult sign1 sign2
+                                                   let set2 = Set.union set1 (aritOP [sign1] tail2 "*")
+                                                   Set.union set2 (aritOP tail1 ([sign2]@tail2) "*")
+    |(sign1::tail1,sign2::tail2,op) when op="/" -> 
+                                                   let set1 = aritOPdiv sign1 sign2
+                                                   let set2 = Set.union set1 (aritOP [sign1] tail2 "/")
+                                                   Set.union set2 (aritOP tail1 ([sign2]@tail2) "/")
+    |(sign1::tail1,sign2::tail2,op) when op="+" ->
+                                                   let set1 = aritOPadd sign1 sign2
+                                                   let set2 = Set.union set1 (aritOP [sign1] tail2 "+")
+                                                   Set.union set2 (aritOP tail1 ([sign2]@tail2) "+")
+    |(sign1::tail1,sign2::tail2,op) when op="-" ->
+                                                   let set1 = aritOPsub sign1 sign2
+                                                   let set2 = Set.union set1 (aritOP [sign1] tail2 "-")
+                                                   Set.union set2 (aritOP tail1 ([sign2]@tail2) "-")
+    |(sign1::tail1,sign2::tail2,op) when op="^" ->
+                                                   let set1 = aritOPpow sign1 sign2
+                                                   let set2 = Set.union set1 (aritOP [sign1] tail2 "^")
+                                                   Set.union set2 (aritOP tail1 ([sign2]@tail2) "^") 
+    |_ -> failwith "Unexpected aritOP match case"                                              
 
-let rec analysisFA expr absMem =
-    let nonNegArraySigns = Set.empty.Add("+").Add("0")
+let rec signAnalysisA expr absMem =
+    // let nonNegArraySigns = Set.empty.Add("+").Add("0")
     match expr with
     |Num(x) -> Set.empty.Add(sign x)
-    |Var(x) -> Set.empty.Add(sign (absMem |> Map.find (Var x)))
-    |TimesExpr(a,b) -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("*")
-    |DivExpr(a,b)   -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("/")
-    |PlusExpr(a,b)  -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("+")
-    |MinusExpr(a,b) -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("-")
-    |PowExpr(a,b)   -> OP (Set.toList (analysisFA a absMem)) (Set.toList (analysisFA b absMem)) ("^")
-    |Array(a,b) when not(Set.isEmpty(Set.intersect (analysisFA b absMem) nonNegArraySigns)) -> Set.empty.Add(sign (absMem |> Map.find (Var a)))
-    |Array(_,b) when Set.isEmpty(Set.intersect (analysisFA b absMem) nonNegArraySigns) -> Set.empty
-    |_ -> failwith "Unexpected expr type."
+    |Var(x) -> absMem |> Map.find (Var x)
+    |TimesExpr(a,b) -> aritOP (Set.toList (signAnalysisA a absMem)) (Set.toList (signAnalysisA b absMem)) ("*")
+    |DivExpr(a,b)   -> aritOP (Set.toList (signAnalysisA a absMem)) (Set.toList (signAnalysisA b absMem)) ("/")
+    |PlusExpr(a,b)  -> aritOP (Set.toList (signAnalysisA a absMem)) (Set.toList (signAnalysisA b absMem)) ("+")
+    |MinusExpr(a,b) -> aritOP (Set.toList (signAnalysisA a absMem)) (Set.toList (signAnalysisA b absMem)) ("-")
+    |PowExpr(a,b)   -> aritOP (Set.toList (signAnalysisA a absMem)) (Set.toList (signAnalysisA b absMem)) ("^")
+    // |Array(a,b) when not(Set.isEmpty(Set.intersect (signAnalysisA b absMem) nonNegArraySigns)) -> absMem |> Map.find (Var a)
+    // |Array(_,b) when Set.isEmpty(Set.intersect (signAnalysisA b absMem) nonNegArraySigns) -> Set.empty
+    |_ -> failwith "UnexpectedsignAnalysisA match case"
+
+let boolOPequal sign1 sign2 =
+    match (sign1,sign2) with
+    |(s1,s2) when s1=s2 -> Set.empty.Add("tt")
+    |_ -> Set.empty.Add("ff")
+
+let boolOPgreater sign1 sign2 =
+    match (sign1,sign2) with
+    |(s1,s2) when (s1="+" && (s2="0" || s2="-")) || (s1="0" && s2="-")-> Set.empty.Add("tt")
+    |(s1,s2) when (s1="+" || s1="-") && s2=s1 -> Set.empty.Add("tt").Add("ff")
+    |(s1,s2) when (s1="-" || s1="0" ) && (s2="0" || s2="+") -> Set.empty.Add("ff")
+    | _ -> failwith "Unexpected boolOPgreater match case"
+
+let boolOPgreaterEq sign1 sign2 =
+    match (sign1,sign2) with
+    |(s1,s2) when (s1="+" ||s1="0") && (s2="0" || s2="-")-> Set.empty.Add("tt")
+    |(s1,s2) when (s1="+" || s1="-") && s2=s1 -> Set.empty.Add("tt").Add("ff")
+    |(s1,s2) when (s1="-" && (s2="0" || s2="+")) || (s1="0" && s2="+") -> Set.empty.Add("ff")
+    | _ -> failwith "Unexpected boolOPnot match case"
+
+let boolOPand sign1 sign2 =
+    match (sign1,sign2) with
+    |(s1,s2) when s1="tt" && s2=s1 -> Set.empty.Add("tt")
+    |(_,s2) when s2="ff" -> Set.empty.Add("ff")
+    | _ -> failwith "Unexpected boolOPand match case" 
+
+let boolOPnot sign1 =
+    match sign1 with
+    |s1 when s1="tt"->Set.empty.Add("ff")
+    |s1 when s1="ff"->Set.empty.Add("tt")
+    | _ -> failwith "Unexpected boolOPnot match case"
+
+let rec boolOP lst1 lst2 operator =
+    match (lst1,lst2,operator) with
+    |(sign1::tail1,sign2::tail2,op) when op="=" -> 
+                                                   let set1 = boolOPequal sign1 sign2
+                                                   let set2 = Set.union set1 (boolOP [sign1] tail2 "=")
+                                                   Set.union set2 (boolOP tail1 ([sign2]@tail2) "=")
+    |(sign1::tail1,sign2::tail2,op) when op=">" -> 
+                                                   let set1 = boolOPgreater sign1 sign2
+                                                   let set2 = Set.union set1 (boolOP [sign1] tail2 ">")
+                                                   Set.union set2 (boolOP tail1 ([sign2]@tail2) ">")
+    |(sign1::tail1,sign2::tail2,op) when op=">="-> 
+                                                   let set1 = boolOPgreaterEq sign1 sign2
+                                                   let set2 = Set.union set1 (boolOP [sign1] tail2 ">=")
+                                                   Set.union set2 (boolOP tail1 ([sign2]@tail2) ">=")
+    |(sign1::tail1,sign2::tail2,op) when op="∧" -> 
+                                                   let set1 = boolOPand sign1 sign2
+                                                   let set2 = Set.union set1 (boolOP [sign1] tail2 "∧")
+                                                   Set.union set2 (boolOP tail1 ([sign2]@tail2) "∧")
+    |(sign1::tail1,_,op) when op="not"          -> 
+                                                   let set1 = boolOPnot sign1
+                                                   Set.union set1 (boolOP tail1 [] "not")
+    |([],_,_) ->Set.empty
+    |(_,[],_)->Set.empty
+    |_ -> failwith "Unexpected boolOP match case"  
+    
+let rec signAnalysisB bool absMem =
+    match bool with
+    | True -> Set.empty.Add("tt")
+    | EqualExpr(a1,a2) -> boolOP (Set.toList (signAnalysisA a1 absMem)) (Set.toList (signAnalysisA a2 absMem)) "="
+    | GreaterExpr(a1,a2) -> boolOP (Set.toList (signAnalysisA a1 absMem)) (Set.toList (signAnalysisA a2 absMem)) ">"
+    | GreaterEqualExpr(a1,a2) -> boolOP (Set.toList (signAnalysisA a1 absMem)) (Set.toList (signAnalysisA a2 absMem)) ">="
+    | AndExpr(b1,b2) -> boolOP (Set.toList (signAnalysisB b1 absMem)) (Set.toList (signAnalysisB b2 absMem)) "∧"
+    // | AndAndExpr of (Boolean * Boolean)
+    | AndAndExpr(b1,b2) -> boolOP (Set.toList (signAnalysisB b1 absMem)) (Set.toList (signAnalysisB b2 absMem)) "∧"
+    | NotExpr(b1) -> boolOP (Set.toList (signAnalysisB b1 absMem)) [] "not"
+    | _ -> failwith "Unexpected signAnalysisB match case"
+
+let sem command absMem = 
+    match command with
+    |IfExpr(gc) -> match gc with
+                   |FunGCExpr(b,_) when (signAnalysisB b absMem).Contains("tt")-> absMem
+                   |FunGCExpr(_,_) -> Map.empty
+                   | _ -> failwith "Unexpected gc match case at sem match case"
+    |AssignExpr(e1,e2) -> absMem |> Map.add e1 (signAnalysisA e2 absMem)
+    |_ -> failwith "Unexpected sem match case"
+    
+
+let rec workListH edgeList powerSet = 
+
+    match edgeList with
+    |[] -> powerSet
+    |edge::tail -> workListH tail (powerSet |> Set.add (Map.empty |> Map.add edge Set.empty))
+
+let rec workList edgeList (absMem: Map<expr,Set<string>>) powerSet =
+    powerSet |> Set.add (absMem)
+
+
+
+
 
 ///////////
 //COMPUTING
@@ -391,7 +491,7 @@ let outputFunction i e =
     | x when x = "3" -> printfn "Your final memory is: %A" (task3Printer e)
     //| x when x = "4" -> 
     //| x when x = "5" -> printfn "Your abstract memory is: %A" (task5Printer e)
-    | _ -> failwith "Task not available. Please try again"
+    | _ -> printfn "Task not available. Please try again"
 
 // We implement here the function that interacts with the user
 let rec compute n =
